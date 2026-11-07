@@ -36,4 +36,26 @@ public class BookController : Controller
         });
         return RedirectToAction(nameof(Index));
     }
+
+    public async Task<IActionResult> ByYear(int year)
+    {
+        var books = await BookStoreMemory.Books.Where(b => b.PublicationDate == year).ToListAsync();
+       /* filtruj listę po roku, zwróć widok Index */
+        return View("index", books);
+
+    }
+
+    public async Task<IActionResult> ByIsbn(string isbn)
+    {
+        if(string.IsNullOrWhiteSpace(isbn)){
+            return NotFound();
+        }
+
+        var book = await BookStoreMemory.Books.FirstOrDefault(b => b.Isbn == isbn);
+        if (book == null)
+        {
+            return NotFound();
+        }
+        /* znajdź książkę, przekieruj na Details lub NotFound() */
+    }
 }
